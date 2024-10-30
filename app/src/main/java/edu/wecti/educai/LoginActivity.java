@@ -25,7 +25,7 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
-        btnLogin = findViewById(R.id.btnLogin);
+        btnLogin = findViewById(R.id.btnComecar);
 
         btnLogin.setOnClickListener(v -> {
             Intent intent = new Intent(this, MenuActivity.class);
