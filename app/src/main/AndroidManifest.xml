@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Educai"
         tools:targetApi="31">
         <activity
+            android:name=".ResumoActivity"
+            android:exported="false" />
+        <activity
             android:name=".RoadmapActivity"
             android:exported="false" />
         <activity
