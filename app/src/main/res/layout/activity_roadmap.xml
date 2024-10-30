@@ -24,11 +24,21 @@
             app:srcCompat="@drawable/educai_ponto" />
 
         <TextView
+            android:id="@+id/txtMoedas"
+            android:layout_width="59dp"
+            android:layout_height="22dp"
+            android:layout_margin="16dp"
+            android:text="0pts"
+            app:layout_constraintBottom_toBottomOf="@+id/imgMoeda"
+            app:layout_constraintStart_toEndOf="@+id/imgMoeda"
+            app:layout_constraintTop_toTopOf="@+id/imgMoeda" />
+
+        <TextView
             android:id="@+id/txtNome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="32dp"
-            android:text="ROADMAP"
+            android:text="CONTEUDOS"
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
