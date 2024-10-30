@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RoadmapActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imgMoeda"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/educai_ponto" />
+
+        <TextView
+            android:id="@+id/txtNome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:text="ROADMAP"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.utils.widget.MockView
+                android:id="@+id/mockView"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="32dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="32dp"
+                android:orientation="horizontal">
+
+                <androidx.constraintlayout.utils.widget.MockView
+                    android:id="@+id/mockView2"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="32dp" />
+
+                <androidx.constraintlayout.utils.widget.MockView
+                    android:id="@+id/mockView3"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="32dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="32dp"
+                android:orientation="horizontal">
+
+                <androidx.constraintlayout.utils.widget.MockView
+                    android:id="@+id/mockView4"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="32dp" />
+
+                <androidx.constraintlayout.utils.widget.MockView
+                    android:id="@+id/mockView5"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="32dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="32dp"
+                android:orientation="horizontal">
+
+                <androidx.constraintlayout.utils.widget.MockView
+                    android:id="@+id/mockView6"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="32dp" />
+
+                <androidx.constraintlayout.utils.widget.MockView
+                    android:id="@+id/mockView7"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="32dp" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.utils.widget.MockView
+                android:id="@+id/mockView8"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="32dp" />
+        </LinearLayout>
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
