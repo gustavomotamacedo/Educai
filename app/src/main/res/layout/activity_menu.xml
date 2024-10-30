@@ -38,6 +38,7 @@
         android:padding="16dp"
         android:text="Bem-vindo(a) ao app Educaí! Seu mentor pelas vastas áreas do conhecimento, trazendo trilhas de aprendizado para facilitar a compreenção de diversos assuntos."
         android:textAlignment="center"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/btnLogin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
