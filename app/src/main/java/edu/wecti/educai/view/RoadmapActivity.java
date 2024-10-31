@@ -77,7 +77,7 @@ public class RoadmapActivity extends AppCompatActivity {
                         Log.d("firebase", String.valueOf(assuntoModelArrayList));
                     }
                     rcvRoadmap.setLayoutManager(new LinearLayoutManager(RoadmapActivity.this));
-                    rcvRoadmap.setAdapter(new AssuntoAdapter(RoadmapActivity.this, assuntoModelArrayList));
+                    rcvRoadmap.setAdapter(new AssuntoAdapter(RoadmapActivity.this, assuntoModelArrayList, username));
                 } else {
                     Toast.makeText(RoadmapActivity.this, String.valueOf(task.getException()), Toast.LENGTH_SHORT).show();
                 }

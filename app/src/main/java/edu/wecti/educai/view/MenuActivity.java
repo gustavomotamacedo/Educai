@@ -2,7 +2,9 @@ package edu.wecti.educai.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -23,7 +25,8 @@ import edu.wecti.educai.R;
 
 public class MenuActivity extends AppCompatActivity {
 
-    private Button btnComecar;
+    private Button btnComecar, btnTutorial;
+    private ProgressBar usernameProgressBar;
     private FirebaseAuth myAuth;
     private DatabaseReference userDbReference;
     private Intent intent;
@@ -42,20 +45,26 @@ public class MenuActivity extends AppCompatActivity {
         myAuth = FirebaseAuth.getInstance();
         userDbReference = FirebaseDatabase.getInstance().getReference("usuarios");
         intent = new Intent(this, ConteudosActivity.class);
+        btnComecar = findViewById(R.id.btnComecar);
+        btnTutorial = findViewById(R.id.btnTutorial);
+        usernameProgressBar = findViewById(R.id.usernameProgressBar);
 
+        usernameProgressBar.setVisibility(View.VISIBLE);
         userDbReference.child(myAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
                     String username = String.valueOf(task.getResult().child("nomeCompleto").getValue(String.class));
                     intent.putExtra("username", username);
+                    btnComecar.setVisibility(View.VISIBLE);
+                    btnTutorial.setVisibility(View.VISIBLE);
                 } else {
                     Toast.makeText(MenuActivity.this, String.valueOf(task.getException()), Toast.LENGTH_SHORT).show();
                 }
+                usernameProgressBar.setVisibility(View.INVISIBLE);
             }
         });
 
-        btnComecar = findViewById(R.id.btnComecar);
         btnComecar.setOnClickListener(v -> {
             startActivity(intent);
         });

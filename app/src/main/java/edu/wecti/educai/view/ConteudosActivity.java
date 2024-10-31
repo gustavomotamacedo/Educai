@@ -3,6 +3,7 @@ package edu.wecti.educai.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +40,7 @@ public class ConteudosActivity extends AppCompatActivity {
     private ArrayList<TrilhaModel> trilhaModels;
     private ArrayList<AssuntoModel> assuntoModels;
     private DatabaseReference trilhasDbRef;
+    private Intent in;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +56,8 @@ public class ConteudosActivity extends AppCompatActivity {
         trilhasDbRef = FirebaseDatabase.getInstance().getReference("trilhas");
 
 
-        Intent in = getIntent();
+        in = getIntent();
         username = in.getStringExtra("username");
-
         txtNome = findViewById(R.id.txtNome);
         txtMoedas = findViewById(R.id.txtMoedas);
         rcvConteudos = findViewById(R.id.rcvConteudos);
@@ -70,7 +71,7 @@ public class ConteudosActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
-                    progressBar.setVisibility(RecyclerView.VISIBLE);
+                    progressBar.setVisibility(View.VISIBLE);
                     DataSnapshot result = task.getResult();
                     for (DataSnapshot trilha : result.getChildren()) {
                         for (DataSnapshot assunto : trilha.getChildren()) {
@@ -84,15 +85,13 @@ public class ConteudosActivity extends AppCompatActivity {
                         }
                         TrilhaModel model = new TrilhaModel(trilha.getKey(), assuntoModels);
                         trilhaModels.add(model);
-                        getIntent().putExtra("assuntoModels", assuntoModels);
-                        Log.d("firebase", model.toString());
                     }
                     rcvConteudos.setLayoutManager(new LinearLayoutManager(ConteudosActivity.this));
-                    rcvConteudos.setAdapter(new TrilhasAdapter(ConteudosActivity.this, trilhaModels));
+                    rcvConteudos.setAdapter(new TrilhasAdapter(ConteudosActivity.this, trilhaModels, username));
                 } else {
                     Toast.makeText(ConteudosActivity.this, String.valueOf(task.getException()), Toast.LENGTH_SHORT).show();
                 }
-                progressBar.setVisibility(RecyclerView.INVISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
             }
         });
 

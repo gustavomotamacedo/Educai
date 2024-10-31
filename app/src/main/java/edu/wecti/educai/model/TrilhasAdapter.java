@@ -19,10 +19,12 @@ public class TrilhasAdapter extends RecyclerView.Adapter<TrilhasAdapter.MyViewHo
 
     private Context context;
     private ArrayList<TrilhaModel> trilhaModelArrayList;
+    private String username;
 
-    public TrilhasAdapter(Context context, ArrayList<TrilhaModel> trilhaModelArrayList) {
+    public TrilhasAdapter(Context context, ArrayList<TrilhaModel> trilhaModelArrayList, String username) {
         this.context = context;
         this.trilhaModelArrayList = trilhaModelArrayList;
+        this.username = username;
     }
 
     @NonNull
@@ -39,6 +41,7 @@ public class TrilhasAdapter extends RecyclerView.Adapter<TrilhasAdapter.MyViewHo
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, RoadmapActivity.class);
+                intent.putExtra("username", username);
                 intent.putExtra("trilha", trilhaModelArrayList.get(aux).getNome());
                 context.startActivity(intent);
             }

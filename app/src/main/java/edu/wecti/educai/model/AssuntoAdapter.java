@@ -20,10 +20,12 @@ public class AssuntoAdapter extends RecyclerView.Adapter<AssuntoAdapter.MyViewHo
 
     private Context context;
     private ArrayList<AssuntoModel> assuntoModelArrayList;
+    private String username;
 
-    public AssuntoAdapter(Context context, ArrayList<AssuntoModel> assuntoModelArrayList) {
+    public AssuntoAdapter(Context context, ArrayList<AssuntoModel> assuntoModelArrayList, String username) {
         this.context = context;
         this.assuntoModelArrayList = assuntoModelArrayList;
+        this.username = username;
     }
 
     @NonNull
@@ -42,6 +44,7 @@ public class AssuntoAdapter extends RecyclerView.Adapter<AssuntoAdapter.MyViewHo
         }
         holder.btnAssunto.setOnClickListener(v -> {
             Intent intent = new Intent(context, ResumoActivity.class);
+            intent.putExtra("username", username);
             context.startActivity(intent);
         });
     }
