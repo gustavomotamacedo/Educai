@@ -13,25 +13,25 @@
         android:theme="@style/Theme.Educai"
         tools:targetApi="31">
         <activity
-            android:name=".ResumoActivity"
+            android:name=".view.ResumoActivity"
             android:exported="false" />
         <activity
-            android:name=".RoadmapActivity"
+            android:name=".view.RoadmapActivity"
             android:exported="false" />
         <activity
-            android:name=".ConteudosActivity"
+            android:name=".view.ConteudosActivity"
             android:exported="false" />
         <activity
-            android:name=".MenuActivity"
+            android:name=".view.MenuActivity"
             android:exported="false" />
         <activity
-            android:name=".CadastroActivity"
+            android:name=".view.CadastroActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".view.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

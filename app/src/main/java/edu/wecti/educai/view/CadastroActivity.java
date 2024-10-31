@@ -1,4 +1,4 @@
-package edu.wecti.educai;
+package edu.wecti.educai.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import edu.wecti.educai.R;
 import edu.wecti.educai.model.UserModel;
 
 public class CadastroActivity extends AppCompatActivity {

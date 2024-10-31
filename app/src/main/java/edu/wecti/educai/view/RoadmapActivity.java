@@ -1,4 +1,4 @@
-package edu.wecti.educai;
+package edu.wecti.educai.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,34 +6,29 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.utils.widget.MockView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import edu.wecti.educai.R;
 
-public class ConteudosActivity extends AppCompatActivity {
+public class RoadmapActivity extends AppCompatActivity {
 
+    private MockView mockClickableTest;
     private TextView txtNome;
     private String username;
-    private FirebaseAuth myAuth;
-    private DatabaseReference myRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_conteudos);
+        setContentView(R.layout.activity_roadmap);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        myAuth = FirebaseAuth.getInstance();
-        myRef = FirebaseDatabase.getInstance().getReference("trilhas");
 
         Intent in = getIntent();
         username = in.getStringExtra("username");
@@ -41,8 +36,10 @@ public class ConteudosActivity extends AppCompatActivity {
         txtNome = findViewById(R.id.txtNome);
         txtNome.setText(username);
 
-        txtNome.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RoadmapActivity.class);
+        mockClickableTest = findViewById(R.id.mockView);
+
+        mockClickableTest.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ResumoActivity.class);
             intent.putExtra("username", username);
             startActivity(intent);
         });

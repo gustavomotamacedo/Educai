@@ -1,4 +1,4 @@
-package edu.wecti.educai;
+package edu.wecti.educai.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +18,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import edu.wecti.educai.R;
 
 public class MenuActivity extends AppCompatActivity {
 
