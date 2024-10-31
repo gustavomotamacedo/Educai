@@ -14,6 +14,8 @@ import androidx.core.view.WindowInsetsCompat;
 public class RoadmapActivity extends AppCompatActivity {
 
     private MockView mockClickableTest;
+    private TextView txtNome;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +28,17 @@ public class RoadmapActivity extends AppCompatActivity {
             return insets;
         });
 
+        Intent in = getIntent();
+        username = in.getStringExtra("username");
+
+        txtNome = findViewById(R.id.txtNome);
+        txtNome.setText(username);
+
         mockClickableTest = findViewById(R.id.mockView);
 
         mockClickableTest.setOnClickListener(v -> {
             Intent intent = new Intent(this, ResumoActivity.class);
+            intent.putExtra("username", username);
             startActivity(intent);
         });
     }
