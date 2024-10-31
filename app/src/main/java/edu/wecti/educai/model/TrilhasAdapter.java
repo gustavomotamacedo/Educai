@@ -17,27 +17,29 @@ import edu.wecti.educai.view.RoadmapActivity;
 
 public class TrilhasAdapter extends RecyclerView.Adapter<TrilhasAdapter.MyViewHolder> {
 
-    Context context;
-    ArrayList<TrilhaModel> trilhaModelList;
+    private Context context;
+    private ArrayList<TrilhaModel> trilhaModelArrayList;
 
-    public TrilhasAdapter(Context context, ArrayList<TrilhaModel> trilhaModelList) {
+    public TrilhasAdapter(Context context, ArrayList<TrilhaModel> trilhaModelArrayList) {
         this.context = context;
-        this.trilhaModelList = trilhaModelList;
+        this.trilhaModelArrayList = trilhaModelArrayList;
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.trilhas_row, parent, false));
+        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.row_trilhas, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.txtTrilhaNome.setText(trilhaModelList.get(position).getNome());
+        int aux = position;
+        holder.txtTrilhaNome.setText(trilhaModelArrayList.get(position).getNome());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, RoadmapActivity.class);
+                intent.putExtra("trilha", trilhaModelArrayList.get(aux).getNome());
                 context.startActivity(intent);
             }
         });
@@ -46,10 +48,10 @@ public class TrilhasAdapter extends RecyclerView.Adapter<TrilhasAdapter.MyViewHo
 
     @Override
     public int getItemCount() {
-        return trilhaModelList.size();
+        return trilhaModelArrayList.size();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
 
         private TextView txtTrilhaNome;
 

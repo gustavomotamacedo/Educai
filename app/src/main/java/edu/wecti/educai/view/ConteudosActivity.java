@@ -38,7 +38,6 @@ public class ConteudosActivity extends AppCompatActivity {
     private RecyclerView rcvConteudos;
     private ArrayList<TrilhaModel> trilhaModels;
     private ArrayList<AssuntoModel> assuntoModels;
-    private FirebaseAuth myAuth;
     private DatabaseReference trilhasDbRef;
 
     @Override
@@ -52,7 +51,6 @@ public class ConteudosActivity extends AppCompatActivity {
             return insets;
         });
 
-        myAuth = FirebaseAuth.getInstance();
         trilhasDbRef = FirebaseDatabase.getInstance().getReference("trilhas");
 
 
@@ -86,6 +84,7 @@ public class ConteudosActivity extends AppCompatActivity {
                         }
                         TrilhaModel model = new TrilhaModel(trilha.getKey(), assuntoModels);
                         trilhaModels.add(model);
+                        getIntent().putExtra("assuntoModels", assuntoModels);
                         Log.d("firebase", model.toString());
                     }
                     rcvConteudos.setLayoutManager(new LinearLayoutManager(ConteudosActivity.this));
