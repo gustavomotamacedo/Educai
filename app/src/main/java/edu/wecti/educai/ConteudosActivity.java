@@ -10,10 +10,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class ConteudosActivity extends AppCompatActivity {
 
     private TextView txtNome;
     private String username;
+    private FirebaseAuth myAuth;
+    private DatabaseReference myRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +31,9 @@ public class ConteudosActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        myAuth = FirebaseAuth.getInstance();
+        myRef = FirebaseDatabase.getInstance().getReference("trilhas");
 
         Intent in = getIntent();
         username = in.getStringExtra("username");

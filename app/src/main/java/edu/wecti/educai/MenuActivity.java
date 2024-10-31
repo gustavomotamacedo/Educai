@@ -3,6 +3,7 @@ package edu.wecti.educai;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -47,7 +48,7 @@ public class MenuActivity extends AppCompatActivity {
                     String username = String.valueOf(task.getResult().child("nomeCompleto").getValue(String.class));
                     intent.putExtra("username", username);
                 } else {
-
+                    Toast.makeText(MenuActivity.this, String.valueOf(task.getException()), Toast.LENGTH_SHORT).show();
                 }
             }
         });
