@@ -1,6 +1,7 @@
 package edu.wecti.educai.model;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import edu.wecti.educai.R;
+import edu.wecti.educai.view.RoadmapActivity;
 
 public class TrilhasAdapter extends RecyclerView.Adapter<TrilhasAdapter.MyViewHolder> {
 
@@ -32,6 +34,14 @@ public class TrilhasAdapter extends RecyclerView.Adapter<TrilhasAdapter.MyViewHo
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.txtTrilhaNome.setText(trilhaModelList.get(position).getNome());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, RoadmapActivity.class);
+                context.startActivity(intent);
+            }
+        });
+
     }
 
     @Override
