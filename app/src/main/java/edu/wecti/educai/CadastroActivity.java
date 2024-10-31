@@ -21,6 +21,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import edu.wecti.educai.model.UserModel;
+
 public class CadastroActivity extends AppCompatActivity {
 
     private EditText edtNome, edtEmail, edtSenha;
@@ -47,17 +49,21 @@ public class CadastroActivity extends AppCompatActivity {
         registerProgressBar = findViewById(R.id.registerProgressBar);
 
         btnRegistrar.setOnClickListener(v -> {
-            String nome = String.valueOf(edtNome.getText());
-            String email = String.valueOf(edtEmail.getText());
-            String senha = String.valueOf(edtSenha.getText());
+            UserModel userModel = new UserModel();
 
-            if (!TextUtils.isEmpty(nome) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(senha)) {
+            userModel.setNomeCompleto(String.valueOf(edtNome.getText()));
+            userModel.setEmail(String.valueOf(edtEmail.getText()));
+            String senha = (String.valueOf(edtSenha.getText()));
+
+            if (!TextUtils.isEmpty(userModel.getNomeCompleto()) && !TextUtils.isEmpty(userModel.getEmail()) && !TextUtils.isEmpty(senha)) {
                 registerProgressBar.setVisibility(View.VISIBLE);
-                myAuth.createUserWithEmailAndPassword(email, senha)
+                myAuth.createUserWithEmailAndPassword(userModel.getEmail(), senha)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
+                                    userModel.setId(myAuth.getUid());
+                                    userModel.salvar();
                                     abrirTelaPrincipal();
                                 } else {
                                     String error = task.getException().getMessage();
@@ -66,9 +72,9 @@ public class CadastroActivity extends AppCompatActivity {
                                 }
                             }
                         });
-            } else if (TextUtils.isEmpty(nome)) {
+            } else if (TextUtils.isEmpty(userModel.getNomeCompleto())) {
                 Toast.makeText(this, "Insira um nome", Toast.LENGTH_SHORT).show();
-            } else if (TextUtils.isEmpty(email)) {
+            } else if (TextUtils.isEmpty(userModel.getEmail())) {
                 Toast.makeText(this, "Insira um email", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Insira uma senha", Toast.LENGTH_SHORT).show();
