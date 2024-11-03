@@ -18,8 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -60,27 +62,27 @@ public class RoadmapActivity extends AppCompatActivity {
 
         txtNome.setText(username);
 
-        dbReference.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        dbReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DataSnapshot result = task.getResult().child(trilhaAtual);
-                    for (DataSnapshot assunto : result.getChildren()) {
-                        AssuntoModel model = new AssuntoModel();
-                        model.setNome(assunto.getKey());
-                        model.setCompletado(Boolean.parseBoolean(String.valueOf(assunto.child("completado").getValue())));
-                        model.setResumo(String.valueOf(assunto.child("resumo").getValue()));
-                        model.setArtigoLink(String.valueOf(assunto.child("artigo").getValue()));
-                        model.setVideoLink(String.valueOf(assunto.child("video").getValue()));
-                        assuntoModelArrayList.add(model);
-                        Log.d("firebase", String.valueOf(assunto.getKey()));
-                        Log.d("firebase", String.valueOf(assuntoModelArrayList));
-                    }
-                    rcvRoadmap.setLayoutManager(new LinearLayoutManager(RoadmapActivity.this));
-                    rcvRoadmap.setAdapter(new AssuntoAdapter(RoadmapActivity.this, assuntoModelArrayList, username));
-                } else {
-                    Toast.makeText(RoadmapActivity.this, String.valueOf(task.getException()), Toast.LENGTH_SHORT).show();
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                assuntoModelArrayList.clear();
+                DataSnapshot result = snapshot.child(trilhaAtual);
+                for (DataSnapshot assunto : result.getChildren()) {
+                    AssuntoModel model = new AssuntoModel();
+                    model.setNome(assunto.getKey());
+                    model.setCompletado(Boolean.parseBoolean(String.valueOf(assunto.child("completada").getValue())));
+                    model.setResumo(String.valueOf(assunto.child("resumo").getValue()));
+                    model.setArtigoLink(String.valueOf(assunto.child("artigo").getValue()));
+                    model.setVideoLink(String.valueOf(assunto.child("video").getValue()));
+                    assuntoModelArrayList.add(model);
                 }
+                rcvRoadmap.setLayoutManager(new LinearLayoutManager(RoadmapActivity.this));
+                rcvRoadmap.setAdapter(new AssuntoAdapter(RoadmapActivity.this, assuntoModelArrayList, trilhaAtual, username));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }

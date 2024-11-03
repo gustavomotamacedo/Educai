@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.ResumoActivity">
+    tools:context=".view.AssuntoActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
@@ -61,7 +61,7 @@
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/txtResumo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
@@ -89,29 +89,7 @@
                         app:srcCompat="@drawable/baseline_article_24" />
 
                     <TextView
-                        android:id="@+id/textView4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Artigo pipipi popopo" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageButton
-                        android:id="@+id/imageButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="16dp"
-                        android:background="@android:color/transparent"
-                        app:srcCompat="@drawable/baseline_article_24" />
-
-                    <TextView
-                        android:id="@+id/textView4"
+                        android:id="@+id/txtArtigo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -133,7 +111,7 @@
                         app:srcCompat="@drawable/baseline_airplay_24" />
 
                     <TextView
-                        android:id="@+id/textView4"
+                        android:id="@+id/txtVideo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

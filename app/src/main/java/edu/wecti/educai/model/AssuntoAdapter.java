@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,18 +13,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import edu.wecti.educai.R;
-import edu.wecti.educai.view.ResumoActivity;
+import edu.wecti.educai.view.AssuntoActivity;
 
 public class AssuntoAdapter extends RecyclerView.Adapter<AssuntoAdapter.MyViewHolder> {
 
     private Context context;
     private ArrayList<AssuntoModel> assuntoModelArrayList;
     private String username;
+    private String trilha;
 
-    public AssuntoAdapter(Context context, ArrayList<AssuntoModel> assuntoModelArrayList, String username) {
+    public AssuntoAdapter(Context context, ArrayList<AssuntoModel> assuntoModelArrayList, String trilha, String username) {
         this.context = context;
         this.assuntoModelArrayList = assuntoModelArrayList;
         this.username = username;
+        this.trilha = trilha;
     }
 
     @NonNull
@@ -43,8 +44,10 @@ public class AssuntoAdapter extends RecyclerView.Adapter<AssuntoAdapter.MyViewHo
             holder.btnAssunto.setBackground(context.getDrawable(R.drawable.assunto_incompleto));
         }
         holder.btnAssunto.setOnClickListener(v -> {
-            Intent intent = new Intent(context, ResumoActivity.class);
+            Intent intent = new Intent(context, AssuntoActivity.class);
             intent.putExtra("username", username);
+            intent.putExtra("trilha", trilha);
+            intent.putExtra("assunto", assuntoModelArrayList.get(position).getNome());
             context.startActivity(intent);
         });
     }
