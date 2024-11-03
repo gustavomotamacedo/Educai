@@ -140,6 +140,12 @@ public class ConteudosActivity extends AppCompatActivity {
 //            intent.putExtra("moedas", String.valueOf(moedas));
 //            startActivity(intent);
         });
+
+        txtNome.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ConfigActivity.class);
+            intent.putExtra("username", username);
+            startActivity(intent);
+        });
     }
     private void injetarNaRecyclerViewComAtraso() {
         // Cria um Handler associado à Thread principal
