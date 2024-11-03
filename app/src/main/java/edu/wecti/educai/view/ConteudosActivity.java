@@ -2,6 +2,7 @@ package edu.wecti.educai.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -40,6 +41,7 @@ public class ConteudosActivity extends AppCompatActivity {
     private ArrayList<TrilhaModel> trilhaModels;
     private ArrayList<AssuntoModel> assuntoModels;
     private DatabaseReference trilhasDbRef;
+    private FirebaseAuth myAuth;
     private Intent in;
 
     @Override
@@ -53,7 +55,8 @@ public class ConteudosActivity extends AppCompatActivity {
             return insets;
         });
 
-        trilhasDbRef = FirebaseDatabase.getInstance().getReference("trilhas");
+        myAuth = FirebaseAuth.getInstance();
+        trilhasDbRef = FirebaseDatabase.getInstance().getReference("usuarios").child(myAuth.getUid()).child("trilhas");
 
 
         in = getIntent();
@@ -66,6 +69,8 @@ public class ConteudosActivity extends AppCompatActivity {
         assuntoModels = new ArrayList<>();
 
         txtNome.setText(username);
+
+
 
         trilhasDbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -85,22 +90,36 @@ public class ConteudosActivity extends AppCompatActivity {
                         }
                         TrilhaModel model = new TrilhaModel(trilha.getKey(), assuntoModels);
                         trilhaModels.add(model);
+                        injetarNaRecyclerViewComAtraso();
                     }
-                    rcvConteudos.setLayoutManager(new LinearLayoutManager(ConteudosActivity.this));
-                    rcvConteudos.setAdapter(new TrilhasAdapter(ConteudosActivity.this, trilhaModels, username));
                 } else {
                     Toast.makeText(ConteudosActivity.this, String.valueOf(task.getException()), Toast.LENGTH_SHORT).show();
                 }
-                progressBar.setVisibility(View.INVISIBLE);
             }
         });
-
-
 
         txtNome.setOnClickListener(v -> {
             Intent intent = new Intent(this, RoadmapActivity.class);
             intent.putExtra("username", username);
             startActivity(intent);
         });
+    }
+    private void injetarNaRecyclerViewComAtraso() {
+        // Cria um Handler associado à Thread principal
+        Handler handler = new Handler();
+
+        // Define o atraso em milissegundos (por exemplo, 3 segundos)
+        int atraso = 800; // 3000 ms = 3 segundos
+
+        // Agendar a execução do código após o atraso
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Código a ser executado após o atraso
+                rcvConteudos.setLayoutManager(new LinearLayoutManager(ConteudosActivity.this));
+                rcvConteudos.setAdapter(new TrilhasAdapter(ConteudosActivity.this, trilhaModels, username));
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+        }, atraso);
     }
 }

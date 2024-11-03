@@ -2,7 +2,10 @@ package edu.wecti.educai.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +32,7 @@ import java.util.ArrayList;
 import edu.wecti.educai.R;
 import edu.wecti.educai.model.AssuntoAdapter;
 import edu.wecti.educai.model.AssuntoModel;
+import edu.wecti.educai.model.TrilhasAdapter;
 
 public class RoadmapActivity extends AppCompatActivity {
 
@@ -37,6 +42,8 @@ public class RoadmapActivity extends AppCompatActivity {
     private String trilhaAtual;
     private ArrayList<AssuntoModel> assuntoModelArrayList;
     private DatabaseReference dbReference;
+    private FirebaseAuth myAuth;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,13 +56,15 @@ public class RoadmapActivity extends AppCompatActivity {
             return insets;
         });
 
-        dbReference = FirebaseDatabase.getInstance().getReference("trilhas");
+        myAuth = FirebaseAuth.getInstance();
+        dbReference = FirebaseDatabase.getInstance().getReference("usuarios").child(myAuth.getUid()).child("trilhas");
 
         Intent in = getIntent();
         username = in.getStringExtra("username");
 
         txtNome = findViewById(R.id.txtNome);
         rcvRoadmap = findViewById(R.id.rcvRoadmap);
+        progressBar = findViewById(R.id.progressBar);
         trilhaAtual = in.getStringExtra("trilha");
         Log.d("firebase", trilhaAtual);
         assuntoModelArrayList = new ArrayList<>();
@@ -65,6 +74,7 @@ public class RoadmapActivity extends AppCompatActivity {
         dbReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                progressBar.setVisibility(View.VISIBLE);
                 assuntoModelArrayList.clear();
                 DataSnapshot result = snapshot.child(trilhaAtual);
                 for (DataSnapshot assunto : result.getChildren()) {
@@ -85,5 +95,24 @@ public class RoadmapActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void injetarNaRecyclerViewComAtraso() {
+        // Cria um Handler associado à Thread principal
+        Handler handler = new Handler();
+
+        // Define o atraso em milissegundos (por exemplo, 3 segundos)
+        int atraso = 800; // 3000 ms = 3 segundos
+
+        // Agendar a execução do código após o atraso
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Código a ser executado após o atraso
+                rcvRoadmap.setLayoutManager(new LinearLayoutManager(RoadmapActivity.this));
+                rcvRoadmap.setAdapter(new AssuntoAdapter(RoadmapActivity.this, assuntoModelArrayList, trilhaAtual, username));
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+        }, atraso);
     }
 }

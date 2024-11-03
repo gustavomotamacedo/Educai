@@ -58,7 +58,7 @@ public class UserModel {
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     DatabaseReference trilhaDbReference = FirebaseDatabase.getInstance().getReference("trilhas");
-                    trilhaDbReference.addValueEventListener(new ValueEventListener() {
+                    trilhaDbReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.exists()) {
