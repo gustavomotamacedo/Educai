@@ -20,4 +20,10 @@ Desenvovido para apresentação no Workshop de Educação Continuada em TI (WECT
 
 - Nathan de Oliveira Cortez
 
+Link para download:
+
+[Download Educaí](https://www.mediafire.com/file/sbkyq5e159v0z5r/Educai.apk/file)
+
+<img src="https://zxing.org/w/chart?cht=qr&chs=350x350&chld=L&choe=UTF-8&chl=https%3A%2F%2Fwww.mediafire.com%2Ffile%2Fsbkyq5e159v0z5r%2FEducai.apk%2Ffile" width="256"/>
+
 <img src="https://github.com/gustavomotamacedo/Educai/blob/main/app/src/main/res/drawable/educai_ponto.png?raw=true" width="128"/>
