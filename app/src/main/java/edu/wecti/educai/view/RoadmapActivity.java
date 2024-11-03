@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -20,8 +19,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,7 +33,6 @@ import java.util.Objects;
 import edu.wecti.educai.R;
 import edu.wecti.educai.model.AssuntoAdapter;
 import edu.wecti.educai.model.AssuntoModel;
-import edu.wecti.educai.model.TrilhasAdapter;
 
 public class RoadmapActivity extends AppCompatActivity {
 
@@ -46,7 +42,7 @@ public class RoadmapActivity extends AppCompatActivity {
     private RecyclerView rcvRoadmap;
     private String trilhaAtual;
     private ArrayList<AssuntoModel> assuntoModelArrayList;
-    private DatabaseReference dbReference, usuariosRef;
+    private DatabaseReference trilhasRef, usuariosRef;
     private DatabaseReference configuracoesRef;
     private List<TextView> todasTextViews = new ArrayList<>();
     private FirebaseAuth myAuth;
@@ -65,8 +61,8 @@ public class RoadmapActivity extends AppCompatActivity {
 
         myAuth = FirebaseAuth.getInstance();
         usuariosRef = FirebaseDatabase.getInstance().getReference("usuarios").child(myAuth.getUid());
-        configuracoesRef = FirebaseDatabase.getInstance().getReference("configuracoes");
-        dbReference = usuariosRef.child("trilhas");
+        configuracoesRef = usuariosRef.child("configuracoes");
+        trilhasRef = usuariosRef.child("trilhas");
 
         Intent in = getIntent();
         username = in.getStringExtra("username");
@@ -77,7 +73,6 @@ public class RoadmapActivity extends AppCompatActivity {
         rcvRoadmap = findViewById(R.id.rcvRoadmap);
         progressBar = findViewById(R.id.progressBar);
         trilhaAtual = in.getStringExtra("trilha");
-        Log.d("firebase", trilhaAtual);
         assuntoModelArrayList = new ArrayList<>();
 
         txtNome.setText(username);
@@ -86,10 +81,10 @@ public class RoadmapActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
+                    float fontSize = Float.parseFloat(Objects.requireNonNull(snapshot.getValue()).toString());
+                    txtNome.setTextSize(fontSize*2.0F);
                     for (TextView textView : todasTextViews) {
-                        float fontSize = Float.parseFloat(Objects.requireNonNull(snapshot.getValue()).toString());
                         textView.setTextSize(fontSize);
-                        txtNome.setTextSize(fontSize*2.0F);
                     }
                 }
             }
@@ -113,7 +108,7 @@ public class RoadmapActivity extends AppCompatActivity {
             }
         });
 
-        dbReference.addValueEventListener(new ValueEventListener() {
+        trilhasRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 progressBar.setVisibility(View.VISIBLE);

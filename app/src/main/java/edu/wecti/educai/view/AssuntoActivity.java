@@ -76,6 +76,7 @@ public class AssuntoActivity extends AppCompatActivity {
         imgMoeda = findViewById(R.id.imgMoeda);
         View rootView = findViewById(R.id.main);
 
+        txtNome.setText(username);
         encontrarTodasAsTextViews(rootView);
 
         tilhasRef.child(trilhaAtual).child(assuntoAtual).child("completada").setValue("true");
@@ -127,7 +128,6 @@ public class AssuntoActivity extends AppCompatActivity {
             }
         });
 
-        txtNome.setText(username);
         txtArtigo.setMovementMethod(LinkMovementMethod.getInstance());
         txtVideo.setMovementMethod(LinkMovementMethod.getInstance());
 
