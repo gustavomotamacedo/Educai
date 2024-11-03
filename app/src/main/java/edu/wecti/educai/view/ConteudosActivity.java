@@ -3,8 +3,8 @@ package edu.wecti.educai.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,8 +22,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -35,14 +37,16 @@ import edu.wecti.educai.model.TrilhasAdapter;
 public class ConteudosActivity extends AppCompatActivity {
 
     private TextView txtNome, txtMoedas;
+    private ImageView imgMoeda;
     private String username;
     private ProgressBar progressBar;
     private RecyclerView rcvConteudos;
     private ArrayList<TrilhaModel> trilhaModels;
     private ArrayList<AssuntoModel> assuntoModels;
-    private DatabaseReference trilhasDbRef;
+    private DatabaseReference trilhasRef, usuariosRef;
     private FirebaseAuth myAuth;
     private Intent in;
+    private int moedas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,13 +60,15 @@ public class ConteudosActivity extends AppCompatActivity {
         });
 
         myAuth = FirebaseAuth.getInstance();
-        trilhasDbRef = FirebaseDatabase.getInstance().getReference("usuarios").child(myAuth.getUid()).child("trilhas");
+        usuariosRef = FirebaseDatabase.getInstance().getReference("usuarios").child(myAuth.getUid());
+        trilhasRef = usuariosRef.child("trilhas");
 
 
         in = getIntent();
         username = in.getStringExtra("username");
         txtNome = findViewById(R.id.txtNome);
         txtMoedas = findViewById(R.id.txtMoedas);
+        imgMoeda = findViewById(R.id.imgMoeda);
         rcvConteudos = findViewById(R.id.rcvConteudos);
         progressBar = findViewById(R.id.progressBar);
         trilhaModels = new ArrayList<>();
@@ -70,9 +76,40 @@ public class ConteudosActivity extends AppCompatActivity {
 
         txtNome.setText(username);
 
+        usuariosRef.child("moedas").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                txtMoedas.setText(snapshot.getValue().toString());
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-        trilhasDbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            }
+        });
+
+        trilhasRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                moedas = 0;
+                for (DataSnapshot trilha : snapshot.getChildren()) {
+                    for (DataSnapshot assunto : trilha.getChildren()) {
+                        boolean completado = Boolean.parseBoolean(assunto.child("completada").getValue().toString());
+                        if (completado) {
+                            moedas++;
+                        }
+                    }
+                }
+                usuariosRef.child("moedas").setValue(moedas);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        trilhasRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -82,7 +119,7 @@ public class ConteudosActivity extends AppCompatActivity {
                         for (DataSnapshot assunto : trilha.getChildren()) {
                             AssuntoModel model = new AssuntoModel();
                             model.setNome(assunto.getKey());
-                            model.setCompletado(Boolean.parseBoolean(String.valueOf(assunto.child("completado").getValue())));
+                            model.setCompletado(Boolean.parseBoolean(String.valueOf(assunto.child("completada").getValue())));
                             model.setResumo(String.valueOf(assunto.child("resumo").getValue()));
                             model.setArtigoLink(String.valueOf(assunto.child("artigo").getValue()));
                             model.setVideoLink(String.valueOf(assunto.child("video").getValue()));
@@ -98,10 +135,10 @@ public class ConteudosActivity extends AppCompatActivity {
             }
         });
 
-        txtNome.setOnClickListener(v -> {
-            Intent intent = new Intent(this, RoadmapActivity.class);
-            intent.putExtra("username", username);
-            startActivity(intent);
+        imgMoeda.setOnClickListener(v -> {
+//            Intent intent = new Intent(this, LojaActivity.class);
+//            intent.putExtra("moedas", String.valueOf(moedas));
+//            startActivity(intent);
         });
     }
     private void injetarNaRecyclerViewComAtraso() {

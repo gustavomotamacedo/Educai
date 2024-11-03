@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,12 +37,13 @@ import edu.wecti.educai.model.TrilhasAdapter;
 
 public class RoadmapActivity extends AppCompatActivity {
 
-    private TextView txtNome;
+    private TextView txtNome, txtMoedas;
+    private ImageView imgMoeda;
     private String username;
     private RecyclerView rcvRoadmap;
     private String trilhaAtual;
     private ArrayList<AssuntoModel> assuntoModelArrayList;
-    private DatabaseReference dbReference;
+    private DatabaseReference dbReference, usuariosRef;
     private FirebaseAuth myAuth;
     private ProgressBar progressBar;
 
@@ -57,12 +59,15 @@ public class RoadmapActivity extends AppCompatActivity {
         });
 
         myAuth = FirebaseAuth.getInstance();
-        dbReference = FirebaseDatabase.getInstance().getReference("usuarios").child(myAuth.getUid()).child("trilhas");
+        usuariosRef = FirebaseDatabase.getInstance().getReference("usuarios").child(myAuth.getUid());
+        dbReference = usuariosRef.child("trilhas");
 
         Intent in = getIntent();
         username = in.getStringExtra("username");
 
         txtNome = findViewById(R.id.txtNome);
+        txtMoedas = findViewById(R.id.txtMoedas);
+        imgMoeda = findViewById(R.id.imgMoeda);
         rcvRoadmap = findViewById(R.id.rcvRoadmap);
         progressBar = findViewById(R.id.progressBar);
         trilhaAtual = in.getStringExtra("trilha");
@@ -70,6 +75,18 @@ public class RoadmapActivity extends AppCompatActivity {
         assuntoModelArrayList = new ArrayList<>();
 
         txtNome.setText(username);
+
+        usuariosRef.child("moedas").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                txtMoedas.setText(snapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         dbReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -94,6 +111,12 @@ public class RoadmapActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
+        });
+
+        imgMoeda.setOnClickListener(v -> {
+//            Intent intent = new Intent(this, LojaActivity.class);
+//            intent.putExtra("moedas", String.valueOf(moedas));
+//            startActivity(intent);
         });
     }
 

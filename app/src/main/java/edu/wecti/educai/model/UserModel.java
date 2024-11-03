@@ -19,6 +19,7 @@ public class UserModel {
     private String id;
     private String nomeCompleto;
     private String email;
+    private int moedas;
 
     public UserModel() {
     }
@@ -27,6 +28,7 @@ public class UserModel {
         this.id = id;
         this.nomeCompleto = nomeCompleto;
         this.email = email;
+        this.moedas = 0;
     }
 
     public String getId() {
@@ -51,6 +53,10 @@ public class UserModel {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public int getMoedas() {
+        return moedas;
     }
 
     public void salvar() {
