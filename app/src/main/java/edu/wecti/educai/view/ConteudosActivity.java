@@ -3,7 +3,9 @@ package edu.wecti.educai.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,6 +30,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import edu.wecti.educai.R;
 import edu.wecti.educai.model.AssuntoModel;
@@ -43,10 +47,11 @@ public class ConteudosActivity extends AppCompatActivity {
     private RecyclerView rcvConteudos;
     private ArrayList<TrilhaModel> trilhaModels;
     private ArrayList<AssuntoModel> assuntoModels;
-    private DatabaseReference trilhasRef, usuariosRef;
+    private DatabaseReference trilhasRef, usuariosRef, configuracoesRef;
     private FirebaseAuth myAuth;
     private Intent in;
     private int moedas;
+    private List<TextView> todasTextViews = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +66,7 @@ public class ConteudosActivity extends AppCompatActivity {
 
         myAuth = FirebaseAuth.getInstance();
         usuariosRef = FirebaseDatabase.getInstance().getReference("usuarios").child(myAuth.getUid());
+        configuracoesRef = usuariosRef.child("configuracoes");
         trilhasRef = usuariosRef.child("trilhas");
 
 
@@ -73,6 +79,9 @@ public class ConteudosActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         trilhaModels = new ArrayList<>();
         assuntoModels = new ArrayList<>();
+        View rootView = findViewById(R.id.main);
+
+        encontrarTodasAsTextViews(rootView);
 
         txtNome.setText(username);
 
@@ -87,6 +96,25 @@ public class ConteudosActivity extends AppCompatActivity {
 
             }
         });
+
+        configuracoesRef.child("tamanho da fonte").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (TextView textView : todasTextViews) {
+                        float fontSize = Float.parseFloat(Objects.requireNonNull(snapshot.getValue()).toString());
+                        textView.setTextSize(fontSize);
+                        txtNome.setTextSize(fontSize*2.0F);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Firebase", "Erro ao buscar configurações adicionais", error.toException());
+            }
+        });
+
 
         trilhasRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -164,5 +192,18 @@ public class ConteudosActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.INVISIBLE);
             }
         }, atraso);
+    }
+
+    private void encontrarTodasAsTextViews(@NonNull View view) {
+        if (view instanceof TextView) {
+            todasTextViews.add((TextView) view);
+        }
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+                encontrarTodasAsTextViews(child);
+            }
+        }
     }
 }

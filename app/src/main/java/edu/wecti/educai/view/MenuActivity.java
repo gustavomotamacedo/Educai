@@ -42,8 +42,8 @@ public class MenuActivity extends AppCompatActivity {
     private FirebaseAuth myAuth;
     private DatabaseReference usuariosRef;
     private DatabaseReference configuracoesRef;
-    private Intent intent;
     private List<TextView> todasTextViews = new ArrayList<>();
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +57,9 @@ public class MenuActivity extends AppCompatActivity {
         });
 
         myAuth = FirebaseAuth.getInstance();
-        usuariosRef = FirebaseDatabase.getInstance().getReference("usuarios");
-        configuracoesRef = FirebaseDatabase.getInstance().getReference("configuracoes");
+        usuariosRef = FirebaseDatabase.getInstance().getReference("usuarios").child(myAuth.getUid());
+        configuracoesRef = usuariosRef.child("configuracoes");
+
         intent = new Intent(this, ConteudosActivity.class);
         btnComecar = findViewById(R.id.btnComecar);
         btnTutorial = findViewById(R.id.btnTutorial);
@@ -88,14 +89,14 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
-        usuariosRef.child(myAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        usuariosRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
                     String username = String.valueOf(task.getResult().child("nomeCompleto").getValue(String.class));
                     intent.putExtra("username", username);
                     btnComecar.setVisibility(View.VISIBLE);
-                    btnTutorial.setVisibility(View.VISIBLE);
+//                    btnTutorial.setVisibility(View.VISIBLE);
                 } else {
                     Toast.makeText(MenuActivity.this, String.valueOf(task.getException()), Toast.LENGTH_SHORT).show();
                 }

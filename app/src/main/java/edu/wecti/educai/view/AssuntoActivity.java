@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +25,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import edu.wecti.educai.R;
 
 public class AssuntoActivity extends AppCompatActivity {
@@ -34,10 +40,12 @@ public class AssuntoActivity extends AppCompatActivity {
     private TextView txtVideo;
     private ImageView imgMoeda;
     private String username;
-    private DatabaseReference databaseReference, usuariosRef;
+    private DatabaseReference tilhasRef, usuariosRef;
+    private DatabaseReference configuracoesRef;
     private FirebaseAuth myAuth;
     private String trilhaAtual;
     private String assuntoAtual;
+    private List<TextView> todasTextViews = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +60,8 @@ public class AssuntoActivity extends AppCompatActivity {
 
         myAuth = FirebaseAuth.getInstance();
         usuariosRef = FirebaseDatabase.getInstance().getReference("usuarios").child(myAuth.getUid());
-        databaseReference = usuariosRef.child("trilhas");
+        tilhasRef = usuariosRef.child("trilhas");
+        configuracoesRef = usuariosRef.child("configuracoes");
 
         Intent in = getIntent();
         trilhaAtual = in.getStringExtra("trilha");
@@ -65,8 +74,30 @@ public class AssuntoActivity extends AppCompatActivity {
         txtVideo = findViewById(R.id.txtVideo);
         txtMoedas = findViewById(R.id.txtMoedas);
         imgMoeda = findViewById(R.id.imgMoeda);
+        View rootView = findViewById(R.id.main);
 
-        databaseReference.child(trilhaAtual).child(assuntoAtual).child("completada").setValue("true");
+        encontrarTodasAsTextViews(rootView);
+
+        tilhasRef.child(trilhaAtual).child(assuntoAtual).child("completada").setValue("true");
+
+        configuracoesRef.child("tamanho da fonte").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (TextView textView : todasTextViews) {
+                        float fontSize = Float.parseFloat(Objects.requireNonNull(snapshot.getValue()).toString());
+                        textView.setTextSize(fontSize);
+                        txtNome.setTextSize(fontSize*2.0F);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Firebase", "Erro ao buscar configurações adicionais", error.toException());
+            }
+        });
+
 
         usuariosRef.child("moedas").addValueEventListener(new ValueEventListener() {
             @Override
@@ -80,7 +111,7 @@ public class AssuntoActivity extends AppCompatActivity {
             }
         });
 
-        databaseReference.child(trilhaAtual).child(assuntoAtual).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        tilhasRef.child(trilhaAtual).child(assuntoAtual).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -105,5 +136,23 @@ public class AssuntoActivity extends AppCompatActivity {
 //            intent.putExtra("moedas", String.valueOf(moedas));
 //            startActivity(intent);
         });
+
+        txtNome.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ConfigActivity.class);
+            intent.putExtra("username", username);
+            startActivity(intent);
+        });
+    }
+    private void encontrarTodasAsTextViews(@NonNull View view) {
+        if (view instanceof TextView) {
+            todasTextViews.add((TextView) view);
+        }
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+                encontrarTodasAsTextViews(child);
+            }
+        }
     }
 }

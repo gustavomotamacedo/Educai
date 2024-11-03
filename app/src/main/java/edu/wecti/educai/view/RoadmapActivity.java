@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,6 +30,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import edu.wecti.educai.R;
 import edu.wecti.educai.model.AssuntoAdapter;
@@ -44,6 +47,8 @@ public class RoadmapActivity extends AppCompatActivity {
     private String trilhaAtual;
     private ArrayList<AssuntoModel> assuntoModelArrayList;
     private DatabaseReference dbReference, usuariosRef;
+    private DatabaseReference configuracoesRef;
+    private List<TextView> todasTextViews = new ArrayList<>();
     private FirebaseAuth myAuth;
     private ProgressBar progressBar;
 
@@ -60,6 +65,7 @@ public class RoadmapActivity extends AppCompatActivity {
 
         myAuth = FirebaseAuth.getInstance();
         usuariosRef = FirebaseDatabase.getInstance().getReference("usuarios").child(myAuth.getUid());
+        configuracoesRef = FirebaseDatabase.getInstance().getReference("configuracoes");
         dbReference = usuariosRef.child("trilhas");
 
         Intent in = getIntent();
@@ -75,6 +81,25 @@ public class RoadmapActivity extends AppCompatActivity {
         assuntoModelArrayList = new ArrayList<>();
 
         txtNome.setText(username);
+
+        configuracoesRef.child("tamanho da fonte").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (TextView textView : todasTextViews) {
+                        float fontSize = Float.parseFloat(Objects.requireNonNull(snapshot.getValue()).toString());
+                        textView.setTextSize(fontSize);
+                        txtNome.setTextSize(fontSize*2.0F);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Firebase", "Erro ao buscar configurações adicionais", error.toException());
+            }
+        });
+
 
         usuariosRef.child("moedas").addValueEventListener(new ValueEventListener() {
             @Override
@@ -118,6 +143,12 @@ public class RoadmapActivity extends AppCompatActivity {
 //            intent.putExtra("moedas", String.valueOf(moedas));
 //            startActivity(intent);
         });
+
+        txtNome.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ConfigActivity.class);
+            intent.putExtra("username", username);
+            startActivity(intent);
+        });
     }
 
     private void injetarNaRecyclerViewComAtraso() {
@@ -137,5 +168,17 @@ public class RoadmapActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.INVISIBLE);
             }
         }, atraso);
+    }
+    private void encontrarTodasAsTextViews(@NonNull View view) {
+        if (view instanceof TextView) {
+            todasTextViews.add((TextView) view);
+        }
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+                encontrarTodasAsTextViews(child);
+            }
+        }
     }
 }
