@@ -86,6 +86,7 @@ public class CadastroActivity extends AppCompatActivity {
 
     private void abrirTelaPrincipal() {
         Intent intent = new Intent(CadastroActivity.this, MenuActivity.class);
+        finishAfterTransition();
         startActivity(intent);
     }
 }

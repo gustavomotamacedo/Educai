@@ -13,6 +13,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.Format;
+
 public class UserModel {
     private String id;
     private String nomeCompleto;
@@ -52,19 +54,20 @@ public class UserModel {
     }
 
     public void salvar() {
-        DatabaseReference userDbreference = FirebaseDatabase.getInstance().getReference("usuarios");
-        userDbreference.child(getId()).setValue(this).addOnCompleteListener(new OnCompleteListener<Void>() {
+        DatabaseReference usuariosReference = FirebaseDatabase.getInstance().getReference("usuarios");
+        usuariosReference.child(getId()).setValue(this).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    DatabaseReference trilhaDbReference = FirebaseDatabase.getInstance().getReference("trilhas");
-                    trilhaDbReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    DatabaseReference trilhasReference = FirebaseDatabase.getInstance().getReference("trilhas");
+                    DatabaseReference lojaReference = FirebaseDatabase.getInstance().getReference("loja");
+                    trilhasReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.exists()) {
                                 for (DataSnapshot trilhaSnapshot : snapshot.getChildren()) {
                                     Object trilha = trilhaSnapshot.getValue();
-                                    userDbreference.child(getId()).child("trilhas").child(trilhaSnapshot.getKey()).setValue(trilha).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    usuariosReference.child(getId()).child("trilhas").child(trilhaSnapshot.getKey()).setValue(trilha).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful())
@@ -76,6 +79,32 @@ public class UserModel {
                                 }
                             } else {
                                 Log.w("Firebase", "Nenhuma trilha encontrada para copiar.");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Log.e("Firebase", "Erro ao ler trilhas: " + error.getMessage());
+                        }
+                    });
+                    lojaReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                for (DataSnapshot lojaSnapshot : snapshot.getChildren()) {
+                                    Object loja = lojaSnapshot.getValue();
+                                    usuariosReference.child(getId()).child("loja").child(lojaSnapshot.getKey()).setValue(loja).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful())
+                                                Log.d("Firebase", "Loja " + lojaSnapshot.getKey() + " copiada para o usuario " + getId());
+                                            else
+                                                Log.e("Firebase", "Erro ao copiar a loja " + lojaSnapshot.getKey(), task.getException());
+                                        }
+                                    });
+                                }
+                            } else {
+                                Log.e("Firebase", "Nenhuma loja encontrada para copiar");
                             }
                         }
 
